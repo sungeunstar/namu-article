@@ -6,32 +6,43 @@ export default function Home() {
   return (
     <main>
       <header className="masthead shell">
-        <Link href="/" className="brand">NAMU<span>ARTICLE</span></Link>
+        <Link href="/" className="brand">NAMU <span>ARTICLE</span></Link>
         <div className="mastMeta">WORDS TO KEEP · VOL. 01</div>
       </header>
 
-      <section className="hero shell">
-        <div className="heroTopline"><span>TODAY&apos;S MESSAGE</span><span>{featured.date}</span></div>
-        <div className="heroGrid">
+      <section className="homeHero shell">
+        <div className="homeHeroMeta">
+          <span>TODAY&apos;S MESSAGE</span>
+          <span>{featured.date}</span>
+        </div>
+
+        <div className="homeHeroGrid">
           <div>
             <p className="eyebrow">{featured.eyebrow}</p>
             <h1>{featured.title}</h1>
             <p className="deck">{featured.subtitle}</p>
-            <Link className="readLink" href={`/articles/${featured.slug}`}>READ THE ARTICLE <span>→</span></Link>
+            <Link className="readLink" href={`/articles/${featured.slug}`}>
+              말씀 전문 읽기 <span>→</span>
+            </Link>
           </div>
+
           <aside className="verseCard">
-            <span>THE VERSE</span>
-            <strong>“너는 네 하나님 여호와의 이름을 망령되게 부르지 말라.”</strong>
+            <span>KEY MESSAGE</span>
+            <strong>“하나님의 이름을 지닌 백성의 말과 삶은 그 이름에 대한 증언이다.”</strong>
             <small>— {featured.verse}</small>
           </aside>
         </div>
       </section>
 
       <section className="latest shell">
-        <div className="sectionHead"><span>THE LATEST</span><span>01 STORY</span></div>
+        <div className="sectionHead">
+          <span>THE LATEST</span>
+          <span>{String(articles.length).padStart(2, '0')} STORY</span>
+        </div>
+
         {articles.map((article, index) => (
           <Link className="storyRow" href={`/articles/${article.slug}`} key={article.slug}>
-            <span className="storyIndex">0{index + 1}</span>
+            <span className="storyIndex">{String(index + 1).padStart(2, '0')}</span>
             <div>
               <h2>{article.title}</h2>
               <p>{article.subtitle}</p>
