@@ -28,7 +28,7 @@ export default function Home() {
 
           <aside className="verseCard">
             <span>KEY MESSAGE</span>
-            <strong>“하나님의 이름을 지닌 백성의 말과 삶은 그 이름에 대한 증언이다.”</strong>
+            <strong>“{featured.keyMessage ?? featured.lead}”</strong>
             <small>— {featured.verse}</small>
           </aside>
         </div>
