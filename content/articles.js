@@ -2,7 +2,7 @@ export const articles = [
   {
     "slug": "restoration-god-begins",
     "eyebrow": "SUNDAY MESSAGE · EZRA 1:1–11",
-    "title": "하나님이 시작하시는 회복",
+    "title": "이스라엘의 회복이 시작되다",
     "subtitle": "회복은 인간의 열심에서 시작되지 않고 하나님께서 먼저 주신 말씀과 약속에서 시작된다.",
     "date": "2026.11.02",
     "readTime": "35 min read",
