@@ -1,5 +1,7 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import ArticleReader from '../../../components/ArticleReader';
+import CopyBlock from '../../../components/CopyBlock';
 import ShareBar from '../../../components/ShareBar';
 import { articles, getArticle } from '../../../content/articles';
 
@@ -14,7 +16,7 @@ export async function generateMetadata({ params }) {
   return { title: `${article.title} — NAMU ARTICLE`, description: article.subtitle };
 }
 
-function Block({ block }) {
+function BlockContent({ block }) {
   if (block.type === 'p') return <p>{block.text}</p>;
   if (block.type === 'quote') {
     return (
@@ -38,13 +40,19 @@ function Block({ block }) {
   return null;
 }
 
+function Block({ block }) {
+  if (block.type === 'divider') return <BlockContent block={block} />;
+  const text = block.type === 'list' ? block.items.join('\n') : `${block.text || ''}${block.cite ? `\n${block.cite}` : ''}`;
+  return <CopyBlock text={text}><BlockContent block={block} /></CopyBlock>;
+}
+
 export default async function ArticlePage({ params }) {
   const { slug } = await params;
   const article = getArticle(slug);
   if (!article) notFound();
 
   return (
-    <main>
+    <ArticleReader key={slug}><main>
       <header className="masthead shell">
         <Link href="/" className="brand">NAMU <span>ARTICLE</span></Link>
         <ShareBar title={article.title} />
@@ -77,7 +85,7 @@ export default async function ArticlePage({ params }) {
           </aside>
 
           <div className="articleMain">
-            <p className="lead">{article.lead}</p>
+            <CopyBlock text={article.lead}><p className="lead">{article.lead}</p></CopyBlock>
 
             {article.sections.map((section) => (
               <section className="articleSection" key={section.number}>
@@ -98,7 +106,7 @@ export default async function ArticlePage({ params }) {
                 {article.flow.map((item, index) => (
                   <li key={item}>
                     <span>{String(index + 1).padStart(2, '0')}</span>
-                    <p>{item}</p>
+                    <CopyBlock text={item}><p>{item}</p></CopyBlock>
                   </li>
                 ))}
               </ol>
@@ -111,7 +119,7 @@ export default async function ArticlePage({ params }) {
                 {article.remember.map((item, index) => (
                   <blockquote key={item}>
                     <span>{String(index + 1).padStart(2, '0')}</span>
-                    <p>{item}</p>
+                    <CopyBlock text={item}><p>{item}</p></CopyBlock>
                   </blockquote>
                 ))}
               </div>
@@ -134,6 +142,6 @@ export default async function ArticlePage({ params }) {
         <span>NAMU ARTICLE</span>
         <p>말씀을 지나치지 않고, 오래 기억하기 위해.</p>
       </footer>
-    </main>
+    </main></ArticleReader>
   );
 }

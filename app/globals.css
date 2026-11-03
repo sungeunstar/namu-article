@@ -253,7 +253,7 @@ button, input, textarea, select { font: inherit; }
   letter-spacing: -0.035em;
   font-weight: 700;
 }
-.sectionBlocks > p {
+.sectionBlocks > p, .sectionBlocks > .copyBlock > p {
   margin: 0 0 18px;
   font-size: 17px;
   line-height: 1.9;
@@ -389,7 +389,7 @@ button, input, textarea, select { font: inherit; }
   font-weight: 580;
 }
 .finalSection { padding-bottom: 0; }
-.finalBlocks > p { font-size: 17px; line-height: 1.9; }
+.finalBlocks > p, .finalBlocks > .copyBlock > p { font-size: 17px; line-height: 1.9; }
 .finalBlocks .importantCallout {
   margin-top: 48px;
   background: var(--accent);
@@ -458,7 +458,7 @@ button, input, textarea, select { font: inherit; }
   }
   .sectionNumber { padding: 0; }
   .sectionContent h2, .specialSection h2 { font-size: 27px; margin-bottom: 25px; }
-  .sectionBlocks > p { font-size: 16px; line-height: 1.88; }
+  .sectionBlocks > p, .sectionBlocks > .copyBlock > p { font-size: 16px; line-height: 1.88; }
   .sectionBlocks .emphasis { font-size: 18px; margin: 24px 0; }
   .sermonQuote { margin: 26px 0; padding-left: 17px; }
   .sermonQuote p { font-size: 17px; line-height: 1.75; }
@@ -469,3 +469,26 @@ button, input, textarea, select { font: inherit; }
   .finalBlocks .importantCallout { padding: 25px; font-size: 18px; }
   .siteFooter { flex-direction: column; gap: 10px; padding-top: 56px; margin-top: 60px; }
 }
+
+/* Reading progress and paragraph copying; content remains in the server-rendered page. */
+.readingProgress { position: fixed; inset: 0 0 auto; height: 4px; z-index: 60; background: var(--line); pointer-events: none; }
+.readingProgress > div { height: 100%; background: var(--accent); transform-origin: left; }
+.readerTools { position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%); z-index: 50; width: max-content; max-width: calc(100% - 24px); display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px; padding: 10px 14px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); box-shadow: 0 4px 22px #17181618; font-size: 12px; }
+.readerTools button { min-height: 40px; border: 1px solid var(--line); border-radius: 7px; padding: 8px 12px; background: var(--paper); color: var(--ink); cursor: pointer; }
+.readerTools button[aria-pressed="true"] { background: var(--accent-soft); color: var(--accent); }
+.readerTools button:disabled { opacity: .45; cursor: default; }
+.readerTools button:focus-visible, .paragraphCopy:focus-visible, .paragraphChoice:focus-within { outline: 2px solid var(--accent); outline-offset: 3px; }
+.readerPercent { color: var(--accent); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.readerStatus:not(:empty) { width: 100%; text-align: center; color: var(--muted); line-height: 1.5; }
+.copyBlock { position: relative; min-width: 0; display: flow-root; }
+.paragraphCopy { position: absolute; right: 0; top: 0; border: 1px solid var(--line); border-radius: 5px; padding: 5px 8px; background: var(--surface); color: var(--accent); cursor: pointer; font-size: 11px; opacity: 0; }
+.copyBlock:hover > .paragraphCopy, .copyBlock:focus-within > .paragraphCopy { opacity: 1; }
+.copyStatus:not(:empty) { display: block; font-size: 12px; color: var(--accent); margin: 5px 0; }
+.selectableParagraph { cursor: pointer; border-radius: 4px; outline: 1px dashed var(--line); outline-offset: 3px; margin-bottom: 12px; }
+.selectedParagraph { background: var(--accent-soft); outline: 2px solid var(--accent); }
+.paragraphChoice { display: flex; width: fit-content; gap: 6px; align-items: center; min-height: 40px; padding: 4px 8px; color: var(--accent); font-size: 12px; cursor: pointer; }
+.paragraphChoice input { width: 18px; height: 18px; accent-color: var(--accent); }
+.readerRoot .siteFooter { padding-bottom: 180px; }
+@media (hover: none) { .paragraphCopy { position: static; display: block; margin: 0 0 12px auto; opacity: 1; min-width: 44px; min-height: 40px; } }
+@media (max-width: 700px) { .readerTools { bottom: max(10px, env(safe-area-inset-bottom)); gap: 5px; padding: 8px; } .readerTools button { padding: 7px 9px; } }
+@media print { .readerTools, .readingProgress, .paragraphCopy, .paragraphChoice, .copyStatus { display: none; } .selectedParagraph, .selectableParagraph { outline: none; background: none; } }
