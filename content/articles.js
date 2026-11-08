@@ -1,4 +1,7 @@
+import godGathersHisPeople from './god-gathers-his-people';
+
 export const articles = [
+  godGathersHisPeople,
   {
     "slug": "restoration-god-begins",
     "eyebrow": "SUNDAY MESSAGE · EZRA 1:1–11",
