@@ -1,9 +1,13 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from "react";
+import { Check, Share2 } from "lucide-react";
 
-export default function ShareBar({ title }) {
-  const [copied, setCopied] = useState(false);
+export default function ShareBar({ title, variant = "text" }) {
+  const [status, setStatus] = useState("");
+  const timer = useRef(null);
+
+  useEffect(() => () => clearTimeout(timer.current), []);
 
   const share = async () => {
     const url = window.location.href;
@@ -11,16 +15,46 @@ export default function ShareBar({ title }) {
       try {
         await navigator.share({ title, url });
         return;
-      } catch (_) {}
+      } catch (error) {
+        if (error.name === "AbortError") return;
+      }
     }
-    await navigator.clipboard.writeText(url);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1600);
+    try {
+      await navigator.clipboard.writeText(url);
+      setStatus("링크 복사됨");
+    } catch (_) {
+      setStatus("링크를 복사하지 못했어요. 주소창의 링크를 복사해주세요.");
+    }
+    clearTimeout(timer.current);
+    timer.current = setTimeout(() => setStatus(""), 2500);
   };
 
   return (
-    <button className="shareButton" onClick={share} aria-label="아티클 공유하기">
-      {copied ? '링크 복사됨' : 'SHARE ARTICLE ↗'}
-    </button>
+    <>
+      <button
+        className={variant === "rail" ? "railShareButton" : "shareButton"}
+        onClick={share}
+        aria-label="아티클 공유하기"
+        title="아티클 공유하기"
+      >
+        {variant === "rail" ? (
+          status === "링크 복사됨" ? (
+            <Check size={20} aria-hidden="true" />
+          ) : (
+            <Share2 size={20} aria-hidden="true" />
+          )
+        ) : (
+          status || "SHARE ARTICLE ↗"
+        )}
+      </button>
+      <span
+        role="status"
+        className={
+          status && variant === "rail" ? "railShareFeedback" : "srOnly"
+        }
+      >
+        {status}
+      </span>
+    </>
   );
 }

@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import ArticleReader from '../../../components/ArticleReader';
 import CopyBlock from '../../../components/CopyBlock';
-import ShareBar from '../../../components/ShareBar';
+import ParagraphSelection from '../../../components/ParagraphSelection';
 import { articles, getArticle } from '../../../content/articles';
 
 export function generateStaticParams() {
@@ -72,12 +72,17 @@ export default async function ArticlePage({ params }) {
   const { slug } = await params;
   const article = getArticle(slug);
   if (!article) notFound();
+  const contents = [
+    ...article.sections.map((section) => ({ id: `section-${section.number}`, label: section.title, number: section.number })),
+    ...(article.flow.length ? [{ id: 'message-flow', label: '오늘 말씀 전체 흐름', number: '' }] : []),
+    ...(article.remember.length ? [{ id: 'remember', label: '기억할 문장', number: '' }] : []),
+    ...(article.finalSummary.length ? [{ id: 'final-summary', label: '최종 정리', number: '' }] : []),
+  ];
 
   return (
-    <ArticleReader key={slug}><main>
+    <ParagraphSelection key={slug}><main>
       <header className="masthead shell">
         <Link href="/" className="brand">NAMU <span>ARTICLE</span></Link>
-        <ShareBar title={article.title} />
       </header>
 
       <article className="article shell">
@@ -101,19 +106,21 @@ export default async function ArticlePage({ params }) {
               <p>{article.date}</p>
               <p>{article.sections.length} sections</p>
               <p>{article.readTime}</p>
+              <ArticleReader items={contents} title={article.title} />
               <div className="railRule" />
               <p className="railCaption">말씀을 지나치지 않고,<br />오래 기억하기 위해.</p>
             </div>
           </aside>
 
           <div className="articleMain">
+            <div id="readingBody">
             <CopyBlock text={article.lead}><p className="lead">{article.lead}</p></CopyBlock>
 
             {article.sections.map((section) => (
-              <section className="articleSection" key={section.number}>
+              <section className="articleSection" key={section.number} id={`section-${section.number}`} tabIndex={-1} aria-labelledby={`heading-${section.number}`}>
                 <div className="sectionNumber">{section.number}</div>
                 <div className="sectionContent">
-                  <h2>{section.title}</h2>
+                  <CopyBlock text={section.title} kind="제목" className="copyHeading"><h2 id={`heading-${section.number}`}>{section.title}</h2></CopyBlock>
                   <div className="sectionBlocks">
                     {section.blocks.map((block, index) => <Block block={block} key={`${section.number}-${index}`} />)}
                   </div>
@@ -121,9 +128,9 @@ export default async function ArticlePage({ params }) {
               </section>
             ))}
 
-            {article.flow.length > 0 && <section className="specialSection flowSection">
+            {article.flow.length > 0 && <section className="specialSection flowSection" id="message-flow" tabIndex={-1} aria-labelledby="heading-flow">
               <div className="specialEyebrow">TODAY&apos;S MESSAGE FLOW</div>
-              <h2>🧭 오늘 말씀 전체 흐름</h2>
+              <CopyBlock text="🧭 오늘 말씀 전체 흐름" kind="제목" className="copyHeading"><h2 id="heading-flow">🧭 오늘 말씀 전체 흐름</h2></CopyBlock>
               <ol className="flowList">
                 {article.flow.map((item, index) => (
                   <li key={item}>
@@ -134,9 +141,9 @@ export default async function ArticlePage({ params }) {
               </ol>
             </section>}
 
-            {article.remember.length > 0 && <section className="specialSection rememberSection">
+            {article.remember.length > 0 && <section className="specialSection rememberSection" id="remember" tabIndex={-1} aria-labelledby="heading-remember">
               <div className="specialEyebrow">TO REMEMBER</div>
-              <h2>기억할 문장</h2>
+              <CopyBlock text="기억할 문장" kind="제목" className="copyHeading"><h2 id="heading-remember">기억할 문장</h2></CopyBlock>
               <div className="rememberList">
                 {article.remember.map((item, index) => (
                   <blockquote key={item}>
@@ -147,13 +154,14 @@ export default async function ArticlePage({ params }) {
               </div>
             </section>}
 
-            {article.finalSummary.length > 0 && <section className="specialSection finalSection">
+            {article.finalSummary.length > 0 && <section className="specialSection finalSection" id="final-summary" tabIndex={-1} aria-labelledby="heading-summary">
               <div className="specialEyebrow">FINAL SUMMARY</div>
-              <h2>최종 정리</h2>
+              <CopyBlock text="최종 정리" kind="제목" className="copyHeading"><h2 id="heading-summary">최종 정리</h2></CopyBlock>
               <div className="sectionBlocks finalBlocks">
                 {article.finalSummary.map((block, index) => <Block block={block} key={`final-${index}`} />)}
               </div>
             </section>}
+            </div>
 
             <div className="backRow"><Link href="/">← 모든 아티클 보기</Link></div>
           </div>
@@ -164,6 +172,6 @@ export default async function ArticlePage({ params }) {
         <span>NAMU ARTICLE</span>
         <p>말씀을 지나치지 않고, 오래 기억하기 위해.</p>
       </footer>
-    </main></ArticleReader>
+    </main></ParagraphSelection>
   );
 }
