@@ -1,7 +1,7 @@
 const article = {
   "slug": "restored-people-worship",
   "eyebrow": "SUNDAY MESSAGE · EZRA 3:1–13",
-  "title": "하나님이 회복하신 백성은 예배합니다",
+  "title": "예배가 회복되다",
   "subtitle": "하나님은 자기 백성을 예배하는 공동체로 회복시키시고, 그리스도 안에서 말씀과 은혜로 만나주신다.",
   "date": "2026.11.15",
   "readTime": "35 min read",
