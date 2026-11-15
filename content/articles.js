@@ -1,6 +1,8 @@
+import restoredPeopleWorship from './restored-people-worship';
 import godGathersHisPeople from './god-gathers-his-people';
 
 export const articles = [
+  restoredPeopleWorship,
   godGathersHisPeople,
   {
     "slug": "restoration-god-begins",
